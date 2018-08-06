@@ -1,4 +1,5 @@
 const host = "http://127.0.0.1:5000";
+const token = "19959995";
 
 let newVocab = document.getElementById('newVocab');
 newVocab.focus();
@@ -21,7 +22,7 @@ function hello(value) {
             count.innerHTML = resp.result;
         }
     }
-    xhr.send("item=" + value + "&token=19959995");
+    xhr.send("item=" + value + "&token=" + token);
 }
 
 let review = document.getElementById("review");

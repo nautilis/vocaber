@@ -83,7 +83,7 @@ function knownIt(id){
             
         }
     }
-    xhr.send("itemid="+id +"&token=19959995");
+    xhr.send("itemid="+id +"&token=" + token);
 }
 
 (function () {
