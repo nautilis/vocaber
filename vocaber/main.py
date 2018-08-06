@@ -143,6 +143,7 @@ def get_today_count():
 def delete_item():
     token = request.form.get("token")
     id = request.form.get("itemid")
+    print(token, "<======>", id)
     if(token != DevConfig.TOKEN):
         res = {"result": "failed"}
     else:
