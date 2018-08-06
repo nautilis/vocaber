@@ -1,6 +1,7 @@
 const host = "http://127.0.0.1:5000";
 
 let newVocab = document.getElementById('newVocab');
+newVocab.focus();
 newVocab.onchange = function (element) {
     console.log(newVocab.value);
     if (newVocab.value.length != 0) {
