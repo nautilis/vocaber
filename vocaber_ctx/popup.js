@@ -28,6 +28,11 @@ review.onclick = function () {
     window.open("review.html");
 };
 
+let seeall = document.getElementById("seeall");
+seeall.onclick = () => {
+    window.open("see-all.html");
+}
+
 
 (function () {
     var xhr = new XMLHttpRequest();
