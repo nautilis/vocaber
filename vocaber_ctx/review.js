@@ -33,6 +33,7 @@ function handleButtonClick(element) {
     let id = buttonId.split("_")[1];
     console.log(id);
     knownIt(id);
+    element.disabled = true;
 };
 
 function handleDelClick(element){
