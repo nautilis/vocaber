@@ -21,7 +21,7 @@ def get_url_res(url, headers={}, tries=2, timeout=19):
 
     return res 
 
-url = "http://127.0.0.1:5000/yesterdays_item"
+url = "http://127.0.0.1:5000/items_by_subday?subday=1"
 res = get_url_res(url)
 json_obj = json.loads(res.text)
 items = json_obj["items"]

@@ -85,10 +85,11 @@ def hello_world():
 
     return jsonify(res)
 
-@app.route('/yesterdays_item')
+@app.route('/items_by_subday')
 def get_yesterday_items():
+    days = int(request.args.get("subday"))
     today = datetime.datetime.today() 
-    yesterday = today - timedelta(days=0)
+    yesterday = today - timedelta(days=days)
     year = yesterday.year
     month = yesterday.month
     day = yesterday.day
@@ -98,6 +99,8 @@ def get_yesterday_items():
     for item in items:
         resp["items"].append(item.to_dict())
     return jsonify(resp) 
+
+
 
 @app.route('/known_it', methods=["POST"])
 def known_it():
