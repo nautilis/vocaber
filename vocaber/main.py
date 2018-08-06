@@ -64,6 +64,13 @@ class VocabItem(db.Model):
     def get_not_master(cls):
         return cls.query.filter(cls.knownit < 10).all()
 
+    @classmethod
+    def delete_item(cls, item_id):
+        item = cls.query.filter_by(id=item_id).first()
+        if(item):
+            db.session.delete(item)
+            db.session.commit()
+
 
 @app.route('/item', methods=['POST','GET'])
 def hello_world():
@@ -131,3 +138,14 @@ def get_today_count():
     count = VocabItem.count()
     result = {"result": count}
     return jsonify(result)
+
+@app.route('/delete_item', methods=["POST"])
+def delete_item():
+    token = request.form.get("token")
+    id = request.form.get("itemid")
+    if(token != DevConfig.TOKEN):
+        res = {"result": "failed"}
+    else:
+        VocabItem.delete_item(id)
+        res = {"result": "success"} 
+    return jsonify(res)
