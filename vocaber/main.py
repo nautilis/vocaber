@@ -150,3 +150,27 @@ def delete_item():
         VocabItem.delete_item(id)
         res = {"result": "success"} 
     return jsonify(res)
+
+@app.route("/get_translate/<string:phrase>", methods=["GET"])
+def get_translate(phrase):
+    try:
+        from googletrans.gtoken import TokenAcquirer
+        import requests
+        import json 
+        acquirer = TokenAcquirer()
+        tk = acquirer.do(phrase)
+        url_base = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-CN&hl=zh-CN&dt=t&dt=bd&dj=1&source=input&tk={}&q={}"
+        url = url_base.format(tk, phrase)
+        print(url)
+        res = requests.get(url)
+        jobj = json.loads(res.text)
+        trans = jobj["sentences"][0]['trans']
+        res = {"result": trans}
+    except:
+        raise
+        res = {"result": 0}
+    return jsonify(res)
+
+    
+    
+
