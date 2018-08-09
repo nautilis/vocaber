@@ -6,9 +6,30 @@ newVocab.focus();
 newVocab.onchange = function (element) {
     console.log(newVocab.value);
     if (newVocab.value.length != 0) {
+        waiting();
         hello(newVocab.value);
+        translate(newVocab.value);
     }
 };
+function waiting(){
+    let translate = document.getElementById("translation");
+    translate.setAttribute("style", "display: inline-block");
+    translate.innerHTML = "waiting translate..."; 
+}
+
+function translate(value){
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://47.90.206.255:8000/get_translate/" + value, true);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState == 4){
+            let resp = JSON.parse(xhr.responseText);
+            let translate = document.getElementById("translation");
+            translate.setAttribute("style", "display: inline-block");
+            translate.innerHTML = resp.result;
+        }
+    }
+    xhr.send();
+}
 
 function hello(value) {
     var xhr = new XMLHttpRequest();

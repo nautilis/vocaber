@@ -38,12 +38,21 @@
             height: 30px;
 
         }
-        .content{
+
+        .content {
             padding-left: 5px;
             padding-bottom: 10px;
         }
-        .seeall{
+
+        .seeall {
             font-size: 10px;
+        }
+
+        #translation {
+            display: inline;
+            font-size: 16px;
+            padding-left: 20px;
+            color: blue;
         }
     </style>
 </head>
@@ -51,17 +60,20 @@
 <body>
     <div class="content">
         <h3>记单词了喂</h3>
-    <p>today's count:
-        <span id="count"></span>
-        <span class="seeall"><a id="seeall" href="#">(see all)</a></span>
-    </p>
-    <from>
-        <label for="newVocab">new item:</label>
-        <input id="newVocab" class="text-input" type="text" />
-    </from>
-    <br>
-    <br>
-    <button id="review">review</button>
+        <p>today's count:
+            <span id="count"></span>
+            <span class="seeall">
+                <a id="seeall" href="#">(see all)</a>
+            </span>
+            <span id="translation" style="display: none">translation</span>
+        </p>
+        <from>
+            <label for="newVocab">new item:</label>
+            <input id="newVocab" class="text-input" type="text" />
+        </from>
+        <br>
+        <br>
+        <button id="review">review</button>
     </div>
     <script src="popup.js"></script>
 </body>

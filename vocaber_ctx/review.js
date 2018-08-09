@@ -16,14 +16,20 @@ function appendList(value, id, times) {
     let span = document.createElement("span");
     span.appendChild(document.createTextNode(value));
     span.setAttribute("class", "word");
+    span.setAttribute("id", "value_" +id);
     let deleteButton = document.createElement("button");
     deleteButton.appendChild(document.createTextNode("delete"))
     deleteButton.setAttribute("id", "del_btn_" + id);
     deleteButton.setAttribute("class", "del_btn");
+    let transButton = document.createElement("button");
+    transButton.appendChild(document.createTextNode("translate"))
+    transButton.setAttribute("id", "trans_btn_" + id);
+    transButton.setAttribute("class", "trans_btn");
     list.appendChild(span);
     list.appendChild(button);
     list.appendChild(span2);
     list.appendChild(span1);
+    list.appendChild(transButton);
     list.appendChild(deleteButton);
     list.setAttribute("id", "list_" + id);
     review.appendChild(list);
@@ -43,6 +49,35 @@ function handleDelClick(element){
         let id = btnId.split("_")[2]
         delete_item(id);
     }
+}
+
+function handleTranslate(element){
+    element.disabled = true;
+    let buttonId = element.id;
+    let id = buttonId.split("_")[2];
+    console.log("translate...   " + id + "translate....");
+    let valueSpan = document.getElementById("value_" + id);
+    let value = valueSpan.innerText;
+    console.log(value)
+
+    translate(element, id, value);
+}
+
+function translate(element, id, value){
+    let xhr = new XMLHttpRequest();
+    xhr.open("GET", host + "/get_translate/" + value, true);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState == 4){
+            let resp = JSON.parse(xhr.responseText);
+            let list = document.getElementById("list_" + id);
+            let span = document.createElement("span");
+            span.appendChild(document.createTextNode(resp.result));
+            span.setAttribute("class", "trans_result");
+            list.appendChild(span);
+            element.disabled = false;
+        }
+    }
+    xhr.send();
 }
 
 function delete_item(id){
@@ -110,6 +145,14 @@ function knownIt(id){
             for(let i=0;i< del_btn.length;i++){
                 del_btn[i].onclick = function(){
                     handleDelClick(this);
+                }
+            }
+
+            let trans_btn = document.getElementsByClassName("trans_btn");
+
+            for(let i=0;i< trans_btn.length;i++){
+                trans_btn[i].onclick = function(){
+                    handleTranslate(this);
                 }
             }
         }
