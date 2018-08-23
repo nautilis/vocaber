@@ -5,9 +5,12 @@ import(
 	"fmt"
 	"./vocaber"
 	"net/http"
-	"github.com/gin-gonic/gin/json"
 	"log"
 	"strconv"
+	"strings"
+	"os/exec"
+	"io/ioutil"
+	"encoding/json"
 )
 func checkerr(err error){
 	if err != nil{
@@ -38,6 +41,24 @@ func isValidToken(r *http.Request) bool{
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
+
+func getUrlRes(url string, second int) string{
+	_timeout := time.Duration( time.Duration(second) * time.Second)
+	client := &http.Client{
+		Timeout: _timeout,
+	}
+	req, err := http.NewRequest("GET", url, nil)
+	req.Header.Add("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
+	resp, err := client.Do(req)
+	if err != nil {
+		resp, err = client.Do(req)
+	}
+	defer resp.Body.Close()
+	bodyBytes, _ := ioutil.ReadAll(resp.Body)
+	bodyString := string(bodyBytes)
+	return bodyString
+}
+
 
 func createHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
@@ -180,6 +201,40 @@ func deleteItem(w http.ResponseWriter, r *http.Request){
 	fmt.Fprint(w, string(resJson))
 }
 
+type Sentence struct {
+	Trans string `json:"trans"`
+	Orig string `json:"orig"`
+	Backend int `json:"backend"`
+}
+
+type  GoogleTran struct{
+	Sentences []Sentence `json:"sentences"`
+}
+
+func translate(w http.ResponseWriter, r *http.Request){
+	enableCors(&w)
+	strList := strings.Split(r.URL.String(), "/")
+	phrase := strList[len(strList)-1]
+	log.Printf("phrase is %s", phrase)
+	out, err := exec.Command("bash", "-c", "./get_tk.py " + phrase).Output()
+	if err != nil{
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	log.Printf( "got tk %s", string(out))
+	url := "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-CN&hl=zh-CN&dt=t&dt=bd&dj=1&source=input&tk=" + string(out) + "&q=" + phrase
+	respBody := getUrlRes(url, 5)
+	//respBody := `{"sentences":[{"trans":"你好","orig":"hello","backend":1}],"dict":[{"pos":"感叹词","terms":["你好!","喂!"],"entry":[{"word":"你好!","reverse_translation":["Hello!","Hi!","Hallo!"],"score":0.13323711},{"word":"喂!","reverse_translation":["Hey!","Hello!"],"score":0.020115795}],"base_form":"Hello!","pos_enum":9}],"src":"en","confidence":1,"ld_result":{"srclangs":["en"],"srclangs_confidences":[1],"extended_srclangs":["en"]}}`
+	googleTran := GoogleTran{}
+	if err := json.Unmarshal([]byte(respBody), &googleTran); err !=nil{
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	result := googleTran.Sentences[0].Trans
+	log.Printf("google json %s", result)
+	fmt.Fprint(w, result)
+}
+
 func main() {
 	http.HandleFunc("/item", createHandler)
 	http.HandleFunc("/items_by_subday", getItemsBySubDay)
@@ -187,6 +242,7 @@ func main() {
 	http.HandleFunc("/get_not_master", getNotMaster)
 	http.HandleFunc("/get_today_count", getTodayCount)
 	http.HandleFunc("/delete_item", deleteItem)
+	http.HandleFunc("/get_translate/", translate)
 	log.Fatal(http.ListenAndServe(":8088", nil))
 }
 
