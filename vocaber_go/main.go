@@ -221,8 +221,9 @@ func translate(w http.ResponseWriter, r *http.Request){
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	tk := strings.Replace(string(out), "\n", "", -1)
 	log.Printf( "got tk %s", string(out))
-	url := "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-CN&hl=zh-CN&dt=t&dt=bd&dj=1&source=input&tk=" + string(out) + "&q=" + phrase
+	url := "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=zh-CN&hl=zh-CN&dt=t&dt=bd&dj=1&source=input&tk=" + tk + "&q=" + phrase
 	respBody := getUrlRes(url, 5)
 	//respBody := `{"sentences":[{"trans":"你好","orig":"hello","backend":1}],"dict":[{"pos":"感叹词","terms":["你好!","喂!"],"entry":[{"word":"你好!","reverse_translation":["Hello!","Hi!","Hallo!"],"score":0.13323711},{"word":"喂!","reverse_translation":["Hey!","Hello!"],"score":0.020115795}],"base_form":"Hello!","pos_enum":9}],"src":"en","confidence":1,"ld_result":{"srclangs":["en"],"srclangs_confidences":[1],"extended_srclangs":["en"]}}`
 	googleTran := GoogleTran{}
@@ -230,8 +231,10 @@ func translate(w http.ResponseWriter, r *http.Request){
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	result := googleTran.Sentences[0].Trans
-	log.Printf("google json %s", result)
+	trans := googleTran.Sentences[0].Trans
+	log.Printf("google json %s", trans)
+	result := make(map[string]string)
+	result["result"] = trans
 	fmt.Fprint(w, result)
 }
 
