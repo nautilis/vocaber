@@ -240,7 +240,7 @@ func translate(w http.ResponseWriter, r *http.Request){
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Fprint(w, respJson)
+	fmt.Fprint(w, string(respJson))
 }
 
 func main() {
