@@ -235,7 +235,12 @@ func translate(w http.ResponseWriter, r *http.Request){
 	log.Printf("google json %s", trans)
 	result := make(map[string]string)
 	result["result"] = trans
-	fmt.Fprint(w, result)
+	respJson, err := json.Marshal(result)
+	if isJsonErr(err, respJson){
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprint(w, respJson)
 }
 
 func main() {
