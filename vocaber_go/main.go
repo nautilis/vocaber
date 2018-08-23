@@ -119,6 +119,7 @@ func getNotMaster(w http.ResponseWriter, r *http.Request){
 	res["items"] = respItems
 	//TODO shuffle
 	resJson, err := json.Marshal(res)
+	//TODO shuffle
 	if isJsonErr(err, resJson){
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
