@@ -47,7 +47,7 @@ func createHandler(w http.ResponseWriter, r *http.Request) {
 	if TOKEN != token {
 		res["result"] = 0
 	}else{
-		vocaberItem := vocaber.VocabItem{Value: item, Created: time.Now(), Knownit: false}
+		vocaberItem := vocaber.VocabItem{Value: item, Created: time.Now(), Knownit: 0}
 		err := vocaber.Save(&vocaberItem)
 		now := time.Now()
 		start := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local)

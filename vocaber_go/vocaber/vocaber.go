@@ -11,7 +11,7 @@ type VocabItem struct {
 	Id int `json:"id"`
 	Value string `json:"value"`
 	Created time.Time `json:"created"`
-	Knownit bool `json:"knownit"`
+	Knownit int`json:"knownit"`
 }
 
 var dbUrl string = "nautilis:nautilis123@tcp(127.0.0.1:3306)/vocabulary?parseTime=true"
@@ -61,7 +61,7 @@ func Know(id int) (bool, error){
 		return false, err;
 	}
 
-	sql := " UPDATE " + getTableName() + " SET knownit = 1 WHERE id = ? "
+	sql := " UPDATE " + getTableName() + " SET knownit = knownit + 1 WHERE id = ? "
 	db.MustExec(sql, id)
 	return true, nil
 }
@@ -71,7 +71,7 @@ func GetNoMaster() ([]VocabItem,error) {
 	if err != nil{
 		return nil, err
 	}
-	sql := " SELECT * FROM " + getTableName() + " WHERE knownit = 0 "
+	sql := " SELECT * FROM " + getTableName() + " WHERE knownit < 10 "
 	items := []VocabItem{}
 	err = db.Select(&items, sql)
 	if err != nil{
