@@ -35,7 +35,12 @@ func isValidToken(r *http.Request) bool{
 	return true
 }
 
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
 func createHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	item := r.FormValue("item")
 	token := r.FormValue("token")
 	res := make(map[string]interface{})
@@ -63,6 +68,7 @@ func createHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getItemsBySubDay(w http.ResponseWriter, r *http.Request){
+	enableCors(&w)
 	subdayStr := (r.URL.Query().Get("subday"))
 	subday, err:= strconv.Atoi(subdayStr)
 	if err != nil{
@@ -85,6 +91,7 @@ func getItemsBySubDay(w http.ResponseWriter, r *http.Request){
 }
 
 func known(w http.ResponseWriter, r *http.Request){
+	enableCors(&w)
 	res := make(map[string]string)
 	if !isValidToken(r){
 		res["result"] = "failed"
@@ -109,6 +116,7 @@ func known(w http.ResponseWriter, r *http.Request){
 }
 
 func getNotMaster(w http.ResponseWriter, r *http.Request){
+	enableCors(&w)
 	items, err := vocaber.GetNoMaster()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -128,6 +136,7 @@ func getNotMaster(w http.ResponseWriter, r *http.Request){
 }
 
 func getTodayCount(w http.ResponseWriter, r *http.Request){
+	enableCors(&w)
 	now := time.Now()
 	start := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local)
 	end := now.Add(time.Hour * 24)
@@ -147,6 +156,7 @@ func getTodayCount(w http.ResponseWriter, r *http.Request){
 }
 
 func deleteItem(w http.ResponseWriter, r *http.Request){
+	enableCors(&w)
 	res :=make(map[string]string)
 	if !isValidToken(r){
 		res["result"] = "failed"
