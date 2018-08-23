@@ -31,6 +31,7 @@ func getTableName() string{
 
 func Save(item *VocabItem) error{
 	db, err:= getDb()
+	defer db.Close()
 	if err != nil{
 		return err
 	}
@@ -43,6 +44,7 @@ func Save(item *VocabItem) error{
 
 func Count(startDate time.Time, endDate time.Time) (int, error){
 	db, err := getDb()
+	defer db.Close()
 	if err != nil {
 		return 1, err
 	}
@@ -57,6 +59,7 @@ func Count(startDate time.Time, endDate time.Time) (int, error){
 
 func Know(id int) (bool, error){
 	db, err := getDb()
+	defer db.Close()
 	if err != nil {
 		return false, err;
 	}
@@ -68,6 +71,7 @@ func Know(id int) (bool, error){
 
 func GetNoMaster() ([]VocabItem,error) {
 	db, err := getDb()
+	defer db.Close()
 	if err != nil{
 		return nil, err
 	}
@@ -82,6 +86,7 @@ func GetNoMaster() ([]VocabItem,error) {
 
 func GetByDate(date time.Time) ([]VocabItem, error){
 	db, err := getDb()
+	defer db.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -98,6 +103,7 @@ func GetByDate(date time.Time) ([]VocabItem, error){
 
 func Delete(id int)(bool, error){
 	db, err := getDb()
+	defer db.Close()
 	if err != nil {
 		return false, err
 	}
