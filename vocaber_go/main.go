@@ -39,9 +39,9 @@ func isValidToken(r *http.Request) bool{
 	return true
 }
 
-func shuffle(list []interface{}, size int)([]interface{}){
+func shuffle(list []vocaber.VocabItem, size int)([]vocaber.VocabItem){
 	length := len(list)
-    newList := make([]interface{}, len(list))
+    newList := make([]vocaber.VocabItem, len(list))
     fmt.Println(list)
 	s := rand.NewSource(time.Now().Unix())
     r := rand.New(s)
@@ -158,14 +158,14 @@ func getNotMaster(w http.ResponseWriter, r *http.Request){
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	length = len(items)
+	length := len(items)
 	var size int
 	if length < 20{
 		size = length
 	}else{
 		size = 20
 	}
-	respItems := shullfe(items, size)
+	respItems := shuffle(items, size)
 	res := make(map[string]interface{})
 	res["items"] = respItems
 	//TODO shuffle
