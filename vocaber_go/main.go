@@ -41,7 +41,7 @@ func isValidToken(r *http.Request) bool{
 
 func shuffle(list []vocaber.VocabItem, size int)([]vocaber.VocabItem){
 	length := len(list)
-    newList := make([]vocaber.VocabItem, len(list))
+    newList := make([]vocaber.VocabItem, size)
     fmt.Println(list)
 	s := rand.NewSource(time.Now().Unix())
     r := rand.New(s)
