@@ -11,6 +11,7 @@ import(
 	"os/exec"
 	"io/ioutil"
 	"encoding/json"
+	"math/rand"
 )
 func checkerr(err error){
 	if err != nil{
@@ -36,6 +37,20 @@ func isValidToken(r *http.Request) bool{
 		return false
 	}
 	return true
+}
+
+func shuffle(list []vocaber.VocabItem, size int)([]vocaber.VocabItem){
+	length := len(list)
+    newList := make([]vocaber.VocabItem, size)
+    fmt.Println(list)
+	s := rand.NewSource(time.Now().Unix())
+    r := rand.New(s)
+	for i:=0; i< size; i++ {
+	    index := r.Intn(length)
+        fmt.Println(index)
+        newList[i] = list[index]
+	}
+	return newList
 }
 
 func enableCors(w *http.ResponseWriter) {
@@ -160,7 +175,14 @@ func getNotMaster(w http.ResponseWriter, r *http.Request){
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	respItems := items[0:20]
+	length := len(items)
+	var size int
+	if length < 20{
+		size = length
+	}else{
+		size = 20
+	}
+	respItems := shuffle(items, size)
 	res := make(map[string]interface{})
 	res["items"] = respItems
 	//TODO shuffle
