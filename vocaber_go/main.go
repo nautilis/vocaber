@@ -111,6 +111,23 @@ func getItemsBySubDay(w http.ResponseWriter, r *http.Request){
 	fmt.Fprint(w, string(resJson))
 }
 
+func getItemByDate(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	dateStr := r.URL.Query().Get("date")
+	local, _ := time.LoadLocation("Asia/Chongqing")
+	tm, _ := time.ParseInLocation("2006-01-02", dateStr, local)
+	log.Println(tm)
+	items, err := vocaber.GetByDate(tm)
+	res := make(map[string]interface{})
+	res["item"] = items
+	resJson, err := json.Marshal(res)
+	if(isJsonErr(err, resJson)) {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprint(w, string(resJson))
+}
+
 func known(w http.ResponseWriter, r *http.Request){
 	enableCors(&w)
 	res := make(map[string]string)
@@ -251,7 +268,8 @@ func main() {
 	http.HandleFunc("/get_today_count", getTodayCount)
 	http.HandleFunc("/delete_item", deleteItem)
 	http.HandleFunc("/get_translate/", translate)
-	log.Fatal(http.ListenAndServe(":8088", nil))
+	http.HandleFunc("/get_items_of_date", getItemByDate)
+	log.Fatal(http.ListenAndServe(":4800", nil))
 }
 
 
